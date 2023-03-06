@@ -141,3 +141,9 @@ def set_admin():
     db.session.commit()
 
     return jsonify({"ok": True, "message": "record updated"}), HTTPStatus.OK
+
+
+@auth_blueprint.route("/check_token", methods=["GET"])
+@jwt_required()
+def check_token():
+    return {"active": True}

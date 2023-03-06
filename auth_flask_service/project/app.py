@@ -2,10 +2,12 @@
 
 from datetime import timedelta
 
-from flask import Flask
+from flask import Flask, request
 from flasgger import Swagger
 
 from flask_migrate import Migrate
+
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 from flask_auth.project.db import db, init_db
 from flask_auth.project.settings import app_settings
@@ -13,9 +15,20 @@ from flask_auth.project.settings import app_settings
 # Import models to create in the db.
 from flask_auth.project.models import Role, User  # noqa: F401
 
+from flask_auth.project.utils.configure_tracer import configure_tracer
 
+
+configure_tracer()
 app = Flask(__name__)
+FlaskInstrumentor().instrument_app(app)
 swagger = Swagger(app)
+
+
+@app.before_request
+def before_request():
+    request_id = request.headers.get("X-Request-Id")
+    if not request_id:
+        raise RuntimeError("request id is required")
 
 
 app.config["SECRET_KEY"] = app_settings.SECRET_KEY
