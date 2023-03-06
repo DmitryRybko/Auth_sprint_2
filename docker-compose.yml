@@ -1,12 +1,24 @@
 version: '3'
 services:
+
+  elasticsearch:
+    container_name: sprint_7_elasticsearch
+    image: elasticsearch:7.7.0
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    restart: always
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+
   redis:
-    container_name: sprint_6_redis
+    container_name: sprint_7_redis
     image: redis
     restart: always
    
   postgres:
-    container_name: sprint_6_postgres
+    container_name: sprint_7_postgres
     image: postgres:13
     restart: always
     volumes:
@@ -14,17 +26,17 @@ services:
     env_file: ./.env
   
   flask-auth:
-    container_name: sprint_6_flask
+    container_name: sprint_7_flask
     environment:
       - DEBUG=0
-    build: ./flask_auth
+    build: ./auth_flask_service
     env_file: ./.env
     depends_on:
       - "redis"
       - "postgres"
 
   nginx:
-    container_name: sprint_6_nginx
+    container_name: sprint_7_nginx
     image: nginx:1.19.2
     volumes:
       - ./nginx_gateway/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -36,3 +48,4 @@ services:
 
 volumes:
   db:
+  esdata:
