@@ -1,0 +1,28 @@
+description: user_roles
+consumes:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id : user_roles
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          description: Unique identifier representing email
+      type: object
+      example:
+        email: email1@emails.ru
+  - name: Authorization
+    in: header
+    description: an authorization header
+    required: true
+    type: string
+responses:
+  '200':
+    description: Successful response
+  '400':
+    description: Not authorized
