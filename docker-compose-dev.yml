@@ -1,0 +1,58 @@
+version: '3'
+services:
+  redis:
+    container_name: sprint_6_redis
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+  
+  postgres:
+    container_name: sprint_6_postgres
+    image: postgres:13
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - "54321:5432"
+    env_file: ./.env
+  
+  flask-auth:
+    container_name: sprint_6_flask
+    environment:
+      - DEBUG=1
+    build: ./flask_auth
+    env_file: ./.env
+    depends_on:
+      - "redis"
+      - "postgres"
+    ports:
+      - "8002:8002"
+    image: sprint-6-flask-auth
+  
+  flask-auth-test:
+    container_name: sprint_6_flask_test
+    image: sprint-6-flask-auth
+    env_file: ./.env
+    depends_on:
+      - "flask-auth"
+    entrypoint: >
+      sh -c "pip install -r /project/flask_auth/tests/requirements.txt
+      && python3 /project/flask_auth/tests/utils/wait_db.py
+      && python3 /project/flask_auth/tests/utils/wait_redis.py
+      && python3 -m pytest /project/flask_auth/tests/unit;
+      python3 -m pytest /project/flask_auth/tests/functional;"
+  
+  nginx:
+    container_name: sprint_6_nginx
+    image: nginx:1.19.2
+    volumes:
+      - ./nginx_gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx_gateway/site.conf:/etc/nginx/conf.d/site.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - "flask-auth"
+ 
+volumes:
+  db:
