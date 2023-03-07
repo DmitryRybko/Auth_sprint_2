@@ -1,0 +1,91 @@
+version: '3'
+services:
+
+  elasticsearch:
+    container_name: sprint_7_elasticsearch
+    image: elasticsearch:7.7.0
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    restart: always
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+
+  redis:
+    container_name: sprint_7_redis
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+  
+  postgres:
+    container_name: sprint_7_postgres
+    image: postgres:13
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - "54321:5432"
+    env_file: ./.env
+
+  nginx:
+    container_name: sprint_7_nginx
+    image: nginx:1.19.2
+    volumes:
+      - ./nginx_gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx_gateway/site.conf:/etc/nginx/conf.d/site.conf:ro
+      - ./nginx_gateway/oauth2.js:/etc/nginx/conf.d/oauth2.js:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - "flask-auth"
+
+  jaeger:
+    container_name: sprint_7_jaeger
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+
+  flask-auth:
+    container_name: sprint_7_flask
+    environment:
+      - DEBUG=1
+    build: ./auth_flask_service
+    env_file: ./.env
+    depends_on:
+      - "redis"
+      - "postgres"
+    ports:
+      - "8002:8002"
+    image: sprint-7-flask-auth
+
+  flask-auth-test:
+    container_name: sprint_7_flask_test
+    image: sprint-6-flask-auth
+    env_file: ./.env
+    depends_on:
+      - "flask-auth"
+    entrypoint: >
+      sh -c "pip install -r /project/flask_auth/tests/requirements.txt
+      && python3 /project/flask_auth/tests/utils/wait_db.py
+      && python3 /project/flask_auth/tests/utils/wait_redis.py
+      && python3 -m pytest /project/flask_auth/tests/unit;
+      python3 -m pytest /project/flask_auth/tests/functional;"
+
+  fastapi-api:
+    container_name: sprint_7_fastapi
+    build: ./async_fastapi_service
+    env_file: ./.env
+    depends_on:
+      - "elasticsearch"
+      - "redis"
+      - "flask-auth"
+    ports:
+      - "8001:8001"
+    image: sprint-7-fastapi
+
+volumes:
+  db:
+  esdata:

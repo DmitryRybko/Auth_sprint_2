@@ -1,0 +1,29 @@
+description: create role
+consumes:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id : create_role
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: role name
+      type: object
+      example:
+        name: role_name
+  - name: Authorization
+    in: header
+    description: an authorization header
+    required: true
+    type: string
+responses:
+  '200':
+    description: Successful response
+  '400':
+    description: Not authorized
+

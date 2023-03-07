@@ -1,0 +1,29 @@
+description: login user
+consumes:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id : login_user
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          description: Unique identifier representing email
+        password:
+          type: string
+          description: password
+      type: object
+      example:
+        email: email1@emails.ru
+        password: pass1
+responses:
+  '200':
+    description: Successful response
+  '401':
+    description: No email or password
+
