@@ -1,0 +1,34 @@
+description: set_role
+consumes:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id : set_role
+      required:
+        - email
+        - new_role
+      properties:
+        email:
+          type: string
+          description: Unique identifier representing email
+        new_role:
+          type: string
+          description: password
+      type: object
+      example:
+        email: email1@emails.ru
+        new_role: new_role_name
+  - name: Authorization
+    in: header
+    description: an authorization header
+    required: true
+    type: string
+responses:
+  '200':
+    description: Successful response
+  '400':
+    description: Not authorized
+

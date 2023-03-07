@@ -1,0 +1,34 @@
+description: update role
+consumes:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      id : update_role
+      required:
+        - name
+        - new_name
+      properties:
+        name:
+          type: string
+          description: role name
+        new_name:
+          type: string
+          description: new role name
+      type: object
+      example:
+        name: role_name
+        new_name: new_role_name
+  - name: Authorization
+    in: header
+    description: an authorization header
+    required: true
+    type: string
+responses:
+  '200':
+    description: Successful response
+  '400':
+    description: Not authorized
+
