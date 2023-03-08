@@ -20,6 +20,9 @@ class AppSettings(BaseSettings):
     auth_app_address: str = '0.0.0.0'
     auth_app_port: str = '8002'
 
+    jaeger_host: str = 'localhost'
+    jaeger_port: str = '6831'
+
     debug: str = '0'
 
 
