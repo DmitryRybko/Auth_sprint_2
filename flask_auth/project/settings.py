@@ -24,7 +24,10 @@ class AppSettings(BaseSettings):
     auth_app_address: str = '0.0.0.0'
     auth_app_port: str = '8002'
 
-    debug: str = '1'
+    jaeger_host: str = 'localhost'
+    jaeger_port: str = '6831'
+
+    debug: str = '0'
 
     GOOGLE_CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
     GOOGLE_CLIENT_ID = 'google_client_id'
