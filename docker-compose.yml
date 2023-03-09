@@ -29,7 +29,7 @@ services:
     container_name: sprint_7_flask
     environment:
       - DEBUG=0
-    build: ./auth_flask_service
+    build: ./flask_auth
     env_file: ./.env
     depends_on:
       - "redis"

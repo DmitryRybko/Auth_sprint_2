@@ -1,6 +1,10 @@
 """flask_auth/settings.py."""
 
+from dotenv import load_dotenv
 from pydantic import BaseSettings
+
+
+load_dotenv()
 
 
 class AppSettings(BaseSettings):
@@ -24,6 +28,10 @@ class AppSettings(BaseSettings):
     jaeger_port: str = '6831'
 
     debug: str = '0'
+
+    GOOGLE_CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+    GOOGLE_CLIENT_ID = 'google_client_id'
+    GOOGLE_CLIENT_SECRET = 'google_client_secret'
 
 
 app_settings = AppSettings()
