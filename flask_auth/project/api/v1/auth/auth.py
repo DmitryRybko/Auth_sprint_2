@@ -47,8 +47,8 @@ def login_social():
 @auth_blueprint.route('/auth')
 def auth():
     token = oauth.google.authorize_access_token()
-    session['user'] = token['userinfo']
-    return redirect('/')
+    userinfo = token['userinfo']
+    return userinfo
 
 
 @auth_blueprint.route('/logout_social')

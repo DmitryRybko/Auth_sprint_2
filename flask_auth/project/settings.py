@@ -26,6 +26,7 @@ class AppSettings(BaseSettings):
 
     debug: str = '1'
 
+    GOOGLE_CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
     GOOGLE_CLIENT_ID = 'google_client_id'
     GOOGLE_CLIENT_SECRET = 'google_client_secret'
 
