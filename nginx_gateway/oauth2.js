@@ -1,6 +1,7 @@
 function introspectAccessToken(r) {
     r.subrequest("/_oauth2_send_request",
         function(reply) {
+            r.log(reply);
             if (reply.status == 200) {
                 var response = JSON.parse(reply.responseBody);
                 if (response.active == true) {

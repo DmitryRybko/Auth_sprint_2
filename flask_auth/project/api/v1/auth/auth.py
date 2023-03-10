@@ -1,19 +1,24 @@
 from datetime import timedelta
 from functools import wraps
+
 from flask import Blueprint, request, flash, jsonify, session, render_template, url_for, redirect
+
 from werkzeug.security import generate_password_hash, check_password_hash
+
 from flask_jwt_extended import create_access_token, jwt_required, create_refresh_token, current_user, get_jwt_identity
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import verify_jwt_in_request
-from http import HTTPStatus
-from flasgger import swag_from
 
+from http import HTTPStatus
+
+from flasgger import swag_from
 
 from flask_auth.project.db import db
 from flask_auth.project.models import User
 from flask_auth.project.models import LogHistory
 from flask_auth.project.jwt_token_db import jwt_redis_blocklist
 from flask_auth.project.app import oauth
+
 
 ACCESS_EXPIRES = timedelta(hours=1)
 
@@ -167,3 +172,9 @@ def set_admin():
     db.session.commit()
 
     return jsonify({"ok": True, "message": "record updated"}), HTTPStatus.OK
+
+
+@auth_blueprint.route("/check_token", methods=["GET"])
+@jwt_required()
+def check_token():
+    return {"active": True}
