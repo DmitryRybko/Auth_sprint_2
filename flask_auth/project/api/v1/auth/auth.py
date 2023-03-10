@@ -56,10 +56,10 @@ def auth():
     return userinfo
 
 
-@auth_blueprint.route('/logout_social')
-def logout_social():
-    session.pop('user', None)
-    return redirect('/')
+# @auth_blueprint.route('/logout_social')
+# def logout_social():
+#     session.pop('user', None)
+#     return redirect('/')
 
 
 @auth_blueprint.route("/register", methods=["POST"])
