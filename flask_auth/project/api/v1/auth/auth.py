@@ -1,3 +1,5 @@
+import string
+import secrets
 from datetime import timedelta
 from functools import wraps
 
@@ -52,14 +54,26 @@ def login_social():
 @auth_blueprint.route('/auth')
 def auth():
     token = oauth.google.authorize_access_token()
-    userinfo = token['userinfo']
-    return userinfo
+    email = token['userinfo']['email']
+    name = token['userinfo']['name']
+    user = User.query.filter_by(email=email).first()
 
+    if not user:
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for i in range(9))
+        new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+        db.session.add(new_user)
+        db.session.commit()
 
-# @auth_blueprint.route('/logout_social')
-# def logout_social():
-#     session.pop('user', None)
-#     return redirect('/')
+    user = User.query.filter_by(email=email).first()
+    access_token = create_access_token(identity=email)
+    refresh_token = create_refresh_token(identity=email)
+
+    log_record = LogHistory(user_id=user.id)
+    db.session.add(log_record)
+    db.session.commit()
+
+    return jsonify(access_token=access_token, refresh_token=refresh_token)
 
 
 @auth_blueprint.route("/register", methods=["POST"])
@@ -100,7 +114,6 @@ def login_post():
     access_token = create_access_token(identity=email)
     refresh_token = create_refresh_token(identity=email)
 
-    user = User.query.filter_by(email=email).first()
     log_record = LogHistory(user_id=user.id)
     db.session.add(log_record)
     db.session.commit()
