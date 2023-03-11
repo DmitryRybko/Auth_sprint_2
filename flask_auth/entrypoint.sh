@@ -15,6 +15,11 @@ echo "create admin user"
 cd "$PROJECT_DIR/flask_auth/project";
 python3 -m flask add_admin --email $ADMIN_EMAIL --password $ADMIN_PASSWORD;
 
+# create postgres partitions
+echo "create postgres partitions"
+cd "$PROJECT_DIR/flask_auth/project";
+python3 -m flask create_partitions;
+
 # run flask_auth app with gunicorn
 echo "run flask app"
 cd "$PROJECT_DIR/flask_auth/";

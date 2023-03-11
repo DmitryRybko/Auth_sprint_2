@@ -40,8 +40,9 @@ def upgrade():
     sa.Column('log_time', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('user_id', sa.UUID(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.PrimaryKeyConstraint('id', 'log_time'),
+    sa.UniqueConstraint('id', 'log_time'),
+    postgresql_partition_by='RANGE (log_time)'
     )
     op.create_table('user_role',
     sa.Column('user_id', sa.UUID(), nullable=True),
