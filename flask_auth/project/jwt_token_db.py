@@ -1,6 +1,6 @@
 """Module to push and to pop jwt tokens in redis."""
 
-# third party imorts
+# third party imports
 import redis
 
 # flask imports

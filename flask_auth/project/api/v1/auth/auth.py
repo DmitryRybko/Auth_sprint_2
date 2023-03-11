@@ -3,7 +3,7 @@ import secrets
 from datetime import timedelta
 from functools import wraps
 
-from flask import Blueprint, request, flash, jsonify, session, render_template, url_for, redirect
+from flask import Blueprint, request, flash, jsonify, render_template, url_for
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -19,7 +19,7 @@ from flask_auth.project.db import db
 from flask_auth.project.models import User
 from flask_auth.project.models import LogHistory
 from flask_auth.project.jwt_token_db import jwt_redis_blocklist
-from flask_auth.project.app import oauth
+from flask_auth.project.oauth import oauth
 
 
 ACCESS_EXPIRES = timedelta(hours=1)
@@ -41,7 +41,6 @@ def admin_access():
 
 @auth_blueprint.route('/')
 def homepage():
-    user = session.get('user')
     return render_template('auth/home.html')
 
 
