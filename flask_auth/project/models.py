@@ -1,9 +1,10 @@
 """Models for auth flask app."""
 
 import uuid
+import datetime
 from dataclasses import dataclass
 
-from sqlalchemy import func
+from sqlalchemy import func, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from flask_login import UserMixin
 
@@ -21,9 +22,42 @@ user_role = db.Table(
     )
 )
 
+log_history_table_name: str = "log_history"
+
+
+def create_partition(target, connection, **kw) -> None:
+    """Create partitions for log_history table."""
+    cur_year: str = datetime.datetime.now().strftime("%Y")
+    for i in range(1, 12):
+        connection.execute(
+            (
+                "CREATE TABLE IF NOT EXISTS "
+                f'"{log_history_table_name}_y{cur_year}m{i}" '
+                f"PARTITION OF {log_history_table_name}"
+                f"FOR VALUES FROM ('{cur_year}-{i}-01') "
+                f"TO ('{cur_year}-{i+1}-01');"
+            )
+        )
+    connection.execute(
+        (
+            "CREATE TABLE IF NOT EXISTS "
+            f'"{log_history_table_name}_y{cur_year}m12" '
+            f"PARTITION OF {log_history_table_name}"
+            f"FOR VALUES FROM ('{cur_year}-12-01') "
+            f"TO ('{cur_year}-12-31');"
+        )
+    )
+
 
 class LogHistory(db.Model):
-    __tablename__ = "log_history"
+    __tablename__ = log_history_table_name
+    __table_args__ = (
+        UniqueConstraint('id', 'log_time'),
+        {
+            'postgresql_partition_by': 'RANGE (log_time)',
+            'listeners': [('after_create', create_partition)],
+        }
+    )
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     log_time = db.Column(db.DateTime(timezone=True), server_default=func.now())
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'))
