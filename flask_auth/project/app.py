@@ -45,16 +45,6 @@ app.config["DEBUG"] = int(app_settings.debug)
 app.config["GOOGLE_CLIENT_ID"] = app_settings.GOOGLE_CLIENT_ID
 app.config["GOOGLE_CLIENT_SECRET"] = app_settings.GOOGLE_CLIENT_SECRET
 
-# google_conf_url = app_settings.GOOGLE_CONF_URL
-# oauth = OAuth(app)
-# oauth.register(
-#     name='google',
-#     server_metadata_url=google_conf_url,
-#     client_kwargs={
-#         'scope': 'openid email profile'
-#     }
-# )
-
 init_db(app)
 app.app_context().push()
 migrate = Migrate(app, db)
