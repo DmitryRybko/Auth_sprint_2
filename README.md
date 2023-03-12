@@ -2,6 +2,7 @@
 
 https://github.com/DmitryRybko/Auth_sprint_2/
 Invite на BigDeepBlue был отправлен 2023-03-11
+Новый Invite переотправлен 2023-03-12
 
 ![](Screenshot 2023-03-12 105231.jpg)
 
