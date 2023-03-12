@@ -10,7 +10,7 @@ from flask import Blueprint
 
 from flask_auth.project.db import db
 from flask_auth.project.models import User
-
+from flask_auth.project.utils import create_log_history_partitions
 
 cli_blueprint = Blueprint("cli", __name__)
 
@@ -45,3 +45,8 @@ def create_admin(email: str = '', password: str = ''):
     db.session.add(new_user)
     db.session.commit()
 
+
+@cli_blueprint.cli.command("create_partitions")
+@click.option("--year", default=datetime.datetime.now().strftime("%Y"))
+def create_partitions(year: str):
+    create_log_history_partitions.create_log_history_partitions(year)
