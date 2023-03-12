@@ -26,6 +26,7 @@ class AppSettings(BaseSettings):
 
     jaeger_host: str = 'localhost'
     jaeger_port: str = '6831'
+    jaeger_enabled = '1'
 
     debug: str = '0'
 

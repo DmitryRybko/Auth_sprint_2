@@ -23,7 +23,8 @@ from flask_auth.project.utils.configure_tracer import configure_tracer
 
 configure_tracer()
 app = Flask(__name__)
-FlaskInstrumentor().instrument_app(app)
+if int(app_settings.jaeger_enabled) == 1:
+    FlaskInstrumentor().instrument_app(app)
 swagger = Swagger(app)
 
 
