@@ -41,6 +41,7 @@ services:
     volumes:
       - ./nginx_gateway/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx_gateway/site.conf:/etc/nginx/conf.d/site.conf:ro
+      - ./nginx_gateway/oauth2.js:/etc/nginx/conf.d/oauth2.js:ro
     ports:
       - "80:80"
     depends_on:
