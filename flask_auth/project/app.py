@@ -1,6 +1,7 @@
 """App module."""
 
 from datetime import timedelta
+
 from flask import Flask, request, json
 from flasgger import Swagger
 from flask_migrate import Migrate
@@ -13,9 +14,19 @@ from flask_auth.project.settings import app_settings
 from flask_auth.project.models import Role, User  # noqa: F401
 from flask_auth.project.utils.configure_tracer import configure_tracer
 
+from flask_auth.project.utils.sentry import connect_sentry
+
+from flask_auth.project.utils.logs import set_logs
+
 
 configure_tracer()
+
+connect_sentry()
+
 app = Flask(__name__)
+
+set_logs(app)
+
 if int(app_settings.jaeger_enabled) == 1:
     FlaskInstrumentor().instrument_app(app)
 swagger = Swagger(app)
