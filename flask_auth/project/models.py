@@ -78,6 +78,14 @@ class Role(db.Model):
     def __repr__(self):
         return f"<Role {self.name}>"
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {
+            "id": self.id,
+            "name": self.name,
+        }
+
 
 class User(UserMixin, db.Model):
 
@@ -93,7 +101,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
     is_admin = db.Column(db.Boolean)
-    log_history = db.relationship('LogHistory')
+    log_history = db.relationship("LogHistory")
 
     roles = db.relationship(
         "Role",
@@ -101,6 +109,16 @@ class User(UserMixin, db.Model):
         backref="users",
         cascade="delete"
     )
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {
+            "id": self.id,
+            "email": self.email,
+            "name": self.name,
+            "roles": [role.serialize for role in self.roles],
+        }
 
     def __repr__(self):
         return f"<User {self.name}>"
