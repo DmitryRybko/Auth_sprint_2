@@ -21,3 +21,4 @@ opentelemetry-api==1.16.0
 opentelemetry-sdk==1.16.0
 opentelemetry-instrumentation-flask==0.37b0
 opentelemetry-exporter-jaeger==1.16.0
+sentry-sdk[flask]==1.19.1
