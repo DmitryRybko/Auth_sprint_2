@@ -41,3 +41,13 @@ class FilmAPI(BaseAPIModel, BaseFilmModel):
 
 class FilmAPIList(BaseAPIModel, BaseFilmModel):
     """Model to return list of films in API."""
+
+
+class GenresOfFilmsAPIList(BaseModel):
+    """Model to return list of genres for films in API."""
+    genre_ids: list[str] = []
+
+
+class GenresOfFilmsAPIListRequest(BaseModel):
+    """Model to receive list of movies."""
+    movies: list[str] | None = None

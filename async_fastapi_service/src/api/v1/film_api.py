@@ -7,12 +7,17 @@
 
 from http import HTTPStatus
 from logging import getLogger
+import random
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request
 
 from fastapi_cache.decorator import cache
 
-from models.films import FilmAPI, FilmAPIList
+from typing import List
+from pydantic import BaseModel
+from uuid import UUID, uuid4
+
+from models.films import FilmAPI, FilmAPIList, GenresOfFilmsAPIList, GenresOfFilmsAPIListRequest
 from models.sort import ImdbRatingFilmSort
 from core.text_messages import text_messages
 
@@ -137,3 +142,18 @@ async def film_details(
         )
 
     return film
+
+
+@router.post("/get_genres", response_model=GenresOfFilmsAPIList)
+async def get_genres(request: GenresOfFilmsAPIListRequest):
+    print(request.movies)
+
+    try:
+        genres = []
+        for movie in request.movies:
+            genre = random.choice(["action", "sci-fi", "comedy"])
+            genres.append(genre)
+        response = GenresOfFilmsAPIList(genre_ids=genres)
+        return response
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
