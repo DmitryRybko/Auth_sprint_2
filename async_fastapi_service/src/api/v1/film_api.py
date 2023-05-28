@@ -18,8 +18,10 @@ from pydantic import BaseModel
 from uuid import UUID, uuid4
 
 from models.films import FilmAPI, FilmAPIList, GenresOfFilmsAPIList, GenresOfFilmsAPIListRequest
+from models.films import RecommendedFilmsAPIDict, RecommendedFilmsAPIRequest
 from models.sort import ImdbRatingFilmSort
 from core.text_messages import text_messages
+from db.db_data import db_data_recom
 
 from services.film import FilmService, get_film_service
 
@@ -146,7 +148,6 @@ async def film_details(
 
 @router.post("/get_genres", response_model=GenresOfFilmsAPIList)
 async def get_genres(request: GenresOfFilmsAPIListRequest):
-    print(request.movies)
 
     try:
         genres = []
@@ -154,6 +155,16 @@ async def get_genres(request: GenresOfFilmsAPIListRequest):
             genre = random.choice(["action", "sci-fi", "comedy"])
             genres.append(genre)
         response = GenresOfFilmsAPIList(genre_ids=genres)
+        return response
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+@router.post("/get_recommendations", response_model=RecommendedFilmsAPIDict)
+async def get_genres(request: RecommendedFilmsAPIRequest):
+
+    try:
+        response = RecommendedFilmsAPIDict(movies_data=db_data_recom)
         return response
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
