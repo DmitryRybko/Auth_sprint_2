@@ -21,7 +21,7 @@ from models.films import FilmAPI, FilmAPIList, GenresOfFilmsAPIList, GenresOfFil
 from models.films import RecommendedFilmsAPIDict, RecommendedFilmsAPIRequest
 from models.sort import ImdbRatingFilmSort
 from core.text_messages import text_messages
-from db.db_data import db_data_recom
+from db.db_data import db_data_recom, db_data_general
 
 from services.film import FilmService, get_film_service
 
@@ -165,6 +165,16 @@ async def get_genres(request: RecommendedFilmsAPIRequest):
 
     try:
         response = RecommendedFilmsAPIDict(movies_data=db_data_recom)
+        return response
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+@router.get("/default_recommendations", response_model=RecommendedFilmsAPIDict)
+async def get_genres():
+
+    try:
+        response = RecommendedFilmsAPIDict(movies_data=db_data_general)
         return response
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
