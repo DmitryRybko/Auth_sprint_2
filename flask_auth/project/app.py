@@ -1,6 +1,7 @@
 """App module."""
 
 from datetime import timedelta
+from logging import getLogger
 
 from flask import Flask, request, json
 from flasgger import Swagger
@@ -27,6 +28,8 @@ app = Flask(__name__)
 
 set_logs(app)
 
+logger = getLogger(__name__)
+
 if int(app_settings.jaeger_enabled) == 1:
     FlaskInstrumentor().instrument_app(app)
 swagger = Swagger(app)
@@ -36,7 +39,10 @@ swagger = Swagger(app)
 def before_request():
     request_id = request.headers.get("X-Request-Id")
     if not request_id:
-        raise RuntimeError("request id is required")
+        if "admin" in request.path:
+            logger.info("Admin request. There is no request-id")
+        else:
+            raise RuntimeError("request id is required")
 
 
 app.config["SECRET_KEY"] = app_settings.SECRET_KEY
@@ -57,6 +63,8 @@ from flask_auth.project.api.v1.auth.auth import auth_blueprint  # noqa: E402, I2
 app.register_blueprint(auth_blueprint, url_prefix="/api/v1/auth")
 from flask_auth.project.api.v1.roles.roles import roles_blueprint  # noqa: E402, I202
 app.register_blueprint(roles_blueprint, url_prefix="/api/v1/roles")
+from flask_auth.project.api.admin.v1.auth import auth_admin_blueprint
+app.register_blueprint(auth_admin_blueprint, url_prefix="/api/admin/v1")
 from flask_auth.project.cli.cli import cli_blueprint  # noqa: E402, I202
 app.register_blueprint(cli_blueprint, cli_group=None)
 
