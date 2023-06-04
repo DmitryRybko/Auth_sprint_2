@@ -161,7 +161,7 @@ async def get_genres(request: GenresOfFilmsAPIListRequest):
 
 
 @router.post("/get_recommendations", response_model=RecommendedFilmsAPIDict)
-async def get_genres(request: RecommendedFilmsAPIRequest):
+async def get_recommendations(request: RecommendedFilmsAPIRequest):
 
     try:
         response = RecommendedFilmsAPIDict(movies_data=db_data_recom)
@@ -171,7 +171,7 @@ async def get_genres(request: RecommendedFilmsAPIRequest):
 
 
 @router.get("/default_recommendations", response_model=RecommendedFilmsAPIDict)
-async def get_genres():
+async def get_default_recommendations():
 
     try:
         response = RecommendedFilmsAPIDict(movies_data=db_data_general)
