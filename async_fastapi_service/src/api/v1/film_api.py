@@ -119,6 +119,16 @@ async def film_list(
     return all_movies
 
 
+@router.get("/default_recommendations", response_model=RecommendedFilmsAPIDict)
+async def get_default_recommendations():
+
+    try:
+        response = RecommendedFilmsAPIDict(movies_data=db_data_general)
+        return response
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
 @router.get('/{film_id}', response_model=FilmAPI)
 @cache(expire=120)
 async def film_details(
@@ -169,12 +179,3 @@ async def get_recommendations(request: RecommendedFilmsAPIRequest):
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
 
-
-@router.get("/default_recommendations", response_model=RecommendedFilmsAPIDict)
-async def get_default_recommendations():
-
-    try:
-        response = RecommendedFilmsAPIDict(movies_data=db_data_general)
-        return response
-    except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
