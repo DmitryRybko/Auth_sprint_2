@@ -28,7 +28,7 @@ def get_all_users() -> tuple[str, HTTPStatus]:
     return jsonify([user.serialize for user in users]), HTTPStatus.OK
 
 
-@auth_admin_blueprint.route("/user", methos=["GET"])
+@auth_admin_blueprint.route("/user", methods=["GET"])
 def get_user_info() -> tuple[str, HTTPStatus]:
     """Return user info."""
     user_id: str = request.args.get("user_id", default="")
